@@ -1,0 +1,10 @@
+{
+  "repository": "whmcs-mailserver",
+  "version": "3.0.0",
+  "product": "mailserver",
+  "module": "yourresellingmailserver",
+  "type": "servers",
+  "modulePath": "modules/servers/yourresellingmailserver",
+  "namespace": "YourReselling\\Whmcs\\Mailserver",
+  "contractDigest": "a6cdf1be65f4bcb63fd16c07820052f53ccff30819262ec5393061ac44e03956"
+}

@@ -1,0 +1,351 @@
+{
+  "mailserver": {
+    "slug": "mailserver",
+    "create": {
+      "method": "POST",
+      "path": "/products/mailserver/domains",
+      "source": "app/Http/Controllers/Api/V1/Mailserver/MailDomainController.php:87",
+      "required_fields": [
+        "mailserver_location_id",
+        "name"
+      ],
+      "response_id_path": "data.id",
+      "body": {
+        "type": "object",
+        "properties": {
+          "mailserver_location_id": {
+            "type": "string",
+            "format": "uuid",
+            "x-validation": [
+              "required",
+              "uuid",
+              "exists:mailserver_locations,id"
+            ],
+            "x-validation-expressions": []
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 255,
+            "x-validation": [
+              "required",
+              "string",
+              "max:255",
+              "regex:/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}$/",
+              "unique:customer_mail_domains,name"
+            ],
+            "x-validation-expressions": []
+          },
+          "quota_bytes": {
+            "type": "integer",
+            "minimum": 104857600,
+            "nullable": true,
+            "x-validation": [
+              "nullable",
+              "integer",
+              "min:104857600"
+            ],
+            "x-validation-expressions": []
+          }
+        },
+        "additionalProperties": true,
+        "required": [
+          "mailserver_location_id",
+          "name"
+        ]
+      },
+      "bodyRequired": true,
+      "pathParameters": [],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "permissions": [
+        "mailserver:create"
+      ],
+      "responseMode": "json"
+    },
+    "termination": {
+      "method": "DELETE",
+      "path": "/products/mailserver/domains/{domain}",
+      "source": "app/Http/Controllers/Api/V1/Mailserver/MailDomainController.php:179",
+      "semantics": "domain deletion with configured retention; mailbox usage ended",
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "pathParameters": [
+        {
+          "name": "domain",
+          "type": "string",
+          "description": "Mail domain ID (UUID)"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "permissions": [
+        "mailserver:delete"
+      ],
+      "responseMode": "json"
+    },
+    "suspend": null,
+    "unsuspend": null,
+    "notes": [
+      "No domain suspend/unsuspend endpoint",
+      "Mailboxes separately created at POST /products/mailserver/domains/{domain}/mailboxes (local_part required, optional quota_bytes); response data.id",
+      "Mailbox enabled toggle is access control, not whole domain suspension"
+    ],
+    "displayName": "Mail-Domain",
+    "module": "yourresellingmailserver",
+    "show": {
+      "id": "GET /products/mailserver/domains/{domain}",
+      "group": "mailserver",
+      "name": "domainsShow",
+      "method": "GET",
+      "path": "/products/mailserver/domains/{domain}",
+      "summary": "Get mail domain details",
+      "description": "Returns a mail domain including live usage (allocated mailbox storage, mailbox count) from the mailserver.",
+      "germanSummary": "Mail-Domain-Details abrufen",
+      "permissions": [
+        "mailserver:read"
+      ],
+      "authenticated": true,
+      "pathParameters": [
+        {
+          "name": "domain",
+          "type": "string",
+          "description": "Mail domain ID (UUID)"
+        }
+      ],
+      "query": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "body": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": true
+      },
+      "bodyRequired": false,
+      "requestContentType": "application/json",
+      "responseMode": "json",
+      "responses": [
+        {
+          "status": 200,
+          "description": "Mail domain",
+          "germanDescription": "Mail-Domain",
+          "schema": null,
+          "example": null,
+          "contentType": "application/json"
+        }
+      ],
+      "deprecated": false,
+      "source": "app/Http/Controllers/Api/V1/Mailserver/MailDomainController.php:151",
+      "routeName": "api.mailserver.domains.show"
+    },
+    "showDataPath": "data",
+    "activeStatuses": [
+      "active"
+    ],
+    "views": {
+      "domainsShow": {
+        "id": "GET /products/mailserver/domains/{domain}",
+        "group": "mailserver",
+        "name": "domainsShow",
+        "method": "GET",
+        "path": "/products/mailserver/domains/{domain}",
+        "summary": "Get mail domain details",
+        "description": "Returns a mail domain including live usage (allocated mailbox storage, mailbox count) from the mailserver.",
+        "germanSummary": "Mail-Domain-Details abrufen",
+        "permissions": [
+          "mailserver:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "domain",
+            "type": "string",
+            "description": "Mail domain ID (UUID)"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [
+          {
+            "status": 200,
+            "description": "Mail domain",
+            "germanDescription": "Mail-Domain",
+            "schema": null,
+            "example": null,
+            "contentType": "application/json"
+          }
+        ],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Mailserver/MailDomainController.php:151",
+        "routeName": "api.mailserver.domains.show"
+      },
+      "mailboxesIndex": {
+        "id": "GET /products/mailserver/domains/{domain}/mailboxes",
+        "group": "mailserver",
+        "name": "mailboxesIndex",
+        "method": "GET",
+        "path": "/products/mailserver/domains/{domain}/mailboxes",
+        "summary": "List mailboxes for a domain",
+        "description": "Returns all mailboxes for a mail domain.",
+        "germanSummary": "Mailboxen einer Domain auflisten",
+        "permissions": [
+          "mailserver:read"
+        ],
+        "authenticated": true,
+        "pathParameters": [
+          {
+            "name": "domain",
+            "type": "string",
+            "description": "Mail domain ID (UUID)"
+          }
+        ],
+        "query": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "body": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": true
+        },
+        "bodyRequired": false,
+        "requestContentType": "application/json",
+        "responseMode": "json",
+        "responses": [
+          {
+            "status": 200,
+            "description": "Mailboxes",
+            "germanDescription": "Mailboxen",
+            "schema": null,
+            "example": null,
+            "contentType": "application/json"
+          }
+        ],
+        "deprecated": false,
+        "source": "app/Http/Controllers/Api/V1/Mailserver/MailboxController.php:33",
+        "routeName": "api.mailserver.mailboxes.index"
+      }
+    },
+    "controls": {},
+    "customerFields": [
+      "name"
+    ],
+    "fields": [
+      {
+        "name": "mailserver_location_id",
+        "path": false,
+        "required": true,
+        "label": "Mail-Standort-ID",
+        "type": "string",
+        "format": "uuid",
+        "x-validation": [
+          "required",
+          "uuid",
+          "exists:mailserver_locations,id"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "name",
+        "path": false,
+        "required": true,
+        "label": "Name",
+        "type": "string",
+        "maxLength": 255,
+        "x-validation": [
+          "required",
+          "string",
+          "max:255",
+          "regex:/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}$/",
+          "unique:customer_mail_domains,name"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "quota_bytes",
+        "path": false,
+        "required": false,
+        "label": "Postfachgröße (Bytes)",
+        "type": "integer",
+        "minimum": 104857600,
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "integer",
+          "min:104857600"
+        ],
+        "x-validation-expressions": []
+      }
+    ],
+    "configFields": [
+      {
+        "name": "mailserver_location_id",
+        "path": false,
+        "required": true,
+        "label": "Mail-Standort-ID",
+        "type": "string",
+        "format": "uuid",
+        "x-validation": [
+          "required",
+          "uuid",
+          "exists:mailserver_locations,id"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "name",
+        "path": false,
+        "required": true,
+        "label": "Name",
+        "type": "string",
+        "maxLength": 255,
+        "x-validation": [
+          "required",
+          "string",
+          "max:255",
+          "regex:/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}$/",
+          "unique:customer_mail_domains,name"
+        ],
+        "x-validation-expressions": []
+      },
+      {
+        "name": "quota_bytes",
+        "path": false,
+        "required": false,
+        "label": "Postfachgröße (Bytes)",
+        "type": "integer",
+        "minimum": 104857600,
+        "nullable": true,
+        "x-validation": [
+          "nullable",
+          "integer",
+          "min:104857600"
+        ],
+        "x-validation-expressions": []
+      }
+    ]
+  }
+}
